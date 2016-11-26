@@ -72,7 +72,8 @@ router.get('/logout', function(req, res){
 });
 
 router.get('/edit-profile', function(req, res, next){
-  res.render('accounts/edit-profile', {messages: req.flash('Success')});
+    var messages = req.flash('success');
+    res.render('accounts/edit-profile', {messages: messages, hashErrors: messages.length > 0});
 });
 
 router.post('/edit-profile', function(req, res, next){

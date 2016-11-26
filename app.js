@@ -11,7 +11,7 @@ var flash = require('express-flash');
 var MongoStore = require('connect-mongo')(session);
 var passport = require('passport');
 
-
+var Category = require('./models/category');
 var secret = require('./config/secrets');
 
 mongoose.connect(secret.database, function(err){
@@ -24,6 +24,8 @@ mongoose.connect(secret.database, function(err){
 
 var routes = require('./routes/index');
 var users = require('./routes/user');
+var admin = require('./routes/admin');
+var api = require('./api/api');
 
 var app = express();
 
@@ -53,8 +55,18 @@ app.use(function(req, res, next){
   next();
 });
 
+app.use(function(req, res, next){
+  Category.find({}, function(err, categories){
+    if(err) return next(err);
+    res.locals.categories = categories;
+    next();
+  });
+});
+
 app.use('/', routes);
 app.use('/user', users);
+app.use('/admin', admin);
+app.use('/api', api);
 
 
 // catch 404 and forward to error handler
